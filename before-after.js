@@ -1,10 +1,17 @@
-﻿/**
+/**
  * Before-After Slider Embeddable Widget
  * Usage: <script src="https://sitecam.io/embed/before-after-embed.js" data-comparison-id="COMPARISON_ID" data-scale="75%"></script>
  */
 (function() {
     'use strict';
     
+    // Configuration - placeholders will be replaced by PHP
+    const WIDGET_CONFIG = {
+        baseUrl: 'https://sitecam.io',
+        apiUrl: 'https://ghwuiljwfbtccgnxzibn.supabase.co',
+        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdod3VpbGp3ZmJ0Y2Nnbnh6aWJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1ODgwNjYsImV4cCI6MjA2NDE2NDA2Nn0.miyizZTE1bOD3Aux9WEBONQo44ev_iWVwFqo1wwApck',
+        version: '1.0.0'
+    };
     
     // Find the script tag that loaded this file
     const currentScript = document.currentScript || (function() {
@@ -131,6 +138,52 @@
             console.error('Error fetching comparison:', error);
             return null;
         }
+    }
+    
+    function renderWidget(comparison) {
+        const aspectRatio = comparison.canvas_height / comparison.canvas_width;
+        const sliderPosition = 50; // Always start at 50% (middle)
+        
+        // Scale font sizes and padding based on scale value
+        const headerPadding = Math.round(15 * scaleValue);
+        const labelPadding = Math.round(6 * scaleValue);
+        const labelFontSize = Math.round(12 * scaleValue);
+        const footerPadding = Math.round(6 * scaleValue);
+        const footerFontSize = Math.round(13 * scaleValue);
+        const sliderButtonSize = Math.round(20 * scaleValue);
+        const sliderWidth = Math.round(4 * scaleValue);
+        
+        container.innerHTML = `
+            <div class="bas-embed-slider" style="position: relative; width: 100%; padding-bottom: ${aspectRatio * 100}%; background: #f5f5f5; overflow: hidden;">
+                <img class="bas-before-img" src="${comparison.before_image_url}" alt="Before" 
+                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                     
+                <img class="bas-after-img" src="${comparison.after_image_url}" alt="After" 
+                     style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; clip-path: inset(0 0 0 ${sliderPosition}%);">
+                     
+                <div class="bas-slider-handle" style="position: absolute; top: 0; bottom: 0; width: ${sliderWidth}px; background: white; left: ${sliderPosition}%; transform: translateX(-50%); cursor: ew-resize; box-shadow: 0 0 ${Math.round(10 * scaleValue)}px rgba(0,0,0,0.3); z-index: 10;">
+                    <div class="bas-slider-button" style="position: absolute; top: 50%; left: 50%; width: ${sliderButtonSize}px; height: ${sliderButtonSize}px; background: white; border-radius: 50%; transform: translate(-50%, -50%); box-shadow: 0 0 ${Math.round(10 * scaleValue)}px rgba(0,0,0,0.3); cursor: ew-resize;"></div>
+                </div>
+                
+                <div class="bas-label bas-before-label" style="position: absolute; bottom: ${headerPadding}px; left: ${headerPadding}px; padding: ${labelPadding}px ${labelPadding * 2}px; background: rgba(0,0,0,0.7); color: white; border-radius: ${Math.round(4 * scaleValue)}px; font-size: ${labelFontSize}px; font-weight: bold; z-index: 5;">BEFORE</div>
+                <div class="bas-label bas-after-label" style="position: absolute; bottom: ${headerPadding}px; right: ${headerPadding}px; padding: ${labelPadding}px ${labelPadding * 2}px; background: rgba(0,0,0,0.7); color: white; border-radius: ${Math.round(4 * scaleValue)}px; font-size: ${labelFontSize}px; font-weight: bold; z-index: 5;">AFTER</div>
+            </div>
+            
+            <div class="bas-embed-footer" style="${showCredit ? `padding: ${footerPadding}px ${headerPadding + 8}px; background: white; border-top: 1px solid #eee; text-align: center;` : 'display: none;'}">
+                <a href="https://sitecam.io/free-construction-before-after-photo-maker/?utm_source=widget&utm_medium=backlink&utm_campaign=before_after_tool" 
+                   target="_blank" 
+                   rel="noopener"
+                   style="display: inline-flex; align-items: center; gap: ${Math.round(6 * scaleValue)}px; color: rgb(145, 145, 145); text-decoration: none; font-size: ${footerFontSize}px; font-weight: 200; transition: color 0.2s;"
+                   onmouseover="this.style.color='rgb(100, 100, 100)'" 
+                   onmouseout="this.style.color='rgb(145, 145, 145)'"
+                   onclick="trackSiteCamClick('${comparisonId}')">
+                    Made with SiteCam
+                </a>
+            </div>
+        `;
+        
+        // Add slider functionality
+        addSliderInteraction();
     }
     
     function addSliderInteraction() {
@@ -339,5 +392,4 @@
         }
     }
     
-
 })();
