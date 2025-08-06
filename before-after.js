@@ -5,13 +5,6 @@
 (function() {
     'use strict';
     
-    // Configuration - placeholders will be replaced by PHP
-    const WIDGET_CONFIG = {
-        baseUrl: 'https://sitecam.io',
-        apiUrl: 'https://ghwuiljwfbtccgnxzibn.supabase.co',
-        apiKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imdod3VpbGp3ZmJ0Y2Nnbnh6aWJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDg1ODgwNjYsImV4cCI6MjA2NDE2NDA2Nn0.miyizZTE1bOD3Aux9WEBONQo44ev_iWVwFqo1wwApck',
-        version: '1.0.0'
-    };
     
     // Find the script tag that loaded this file
     const currentScript = document.currentScript || (function() {
@@ -346,4 +339,5 @@
         }
     }
     
+
 })();
